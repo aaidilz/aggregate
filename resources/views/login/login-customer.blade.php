@@ -1,6 +1,7 @@
 @extends('layouts-customer.login-main')
 
 @section('content')
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-xl-10 col-lg-12 col-md-9">
@@ -12,12 +13,17 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Selamat Datang!</h1>
                                     </div>
-                                    <form class="user" method="POST" action="#">
+                                    @if (session('error'))
+                                        <div class="alert alert-danger">
+                                            {{ session('error') }}
+                                        </div>
+                                    @endif
+                                    <form class="user" method="POST" action="{{ route('verify-login') }}">
                                         @csrf
                                         <div class="form-group">
-                                            <input type="email" name="email" class="form-control form-control-user"
-                                                id="exampleInputEmail" aria-describedby="emailHelp"
-                                                placeholder="Enter Email Address...">
+                                            <input type="username" name="username" class="form-control form-control-user"
+                                                id="exampleInputUsername" aria-describedby="UsernameHelp"
+                                                placeholder="Enter Username...">
                                         </div>
                                         <div class="form-group">
                                             <input type="password" name="password" class="form-control form-control-user"

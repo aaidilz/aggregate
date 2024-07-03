@@ -18,7 +18,7 @@ class LoginCustomerController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::guard('customer')->attempt($credentials)) {
-            return redirect()->intended('/customer');
+            return redirect()->intended('/customer/dashboard');
         }
 
         return back()->with('error', 'Login failed! Please check your username and password.');
