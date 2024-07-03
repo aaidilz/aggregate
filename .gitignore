@@ -20,3 +20,4 @@ yarn-error.log
 /.vscode
 /vendor/startbootstrap
 public/vendor/startbootstrap
+.env copy.example
