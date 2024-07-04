@@ -32,7 +32,7 @@
     <li class="nav-item">
         <a class="nav-link" href="charts.html">
             <i class="fa fa-fw fa-cube"></i>
-            <span>Approval</span></a>
+            <span>Approvals</span></a>
     </li>
 
     <!-- Divider -->
@@ -53,8 +53,8 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Databases</h6>
-                <a class="collapse-item" href="login.html">Login</a>
-                <a class="collapse-item" href="register.html">Register</a>
+                <a class="collapse-item" href="{{ route('parts.index') }}">Parts</a>
+                <a class="collapse-item" href="{{ route('services.index') }}">Services</a>
             </div>
         </div>
     </li>
@@ -66,7 +66,7 @@
     <li class="nav-item">
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-cogs"></i>
-            <span>Tables</span></a>
+            <span>Settings</span></a>
     </li>
 
     <!-- Divider -->
