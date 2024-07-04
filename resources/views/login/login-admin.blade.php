@@ -18,7 +18,7 @@
                                             {{ session('error') }}
                                         </div>
                                     @endif
-                                    <form class="user" method="POST" action="{{ route('verify-login') }}">
+                                    <form class="user" method="POST" action="{{ route('verify-login-admin') }}">
                                         @csrf
                                         <div class="form-group">
                                             <input type="username" name="username" class="form-control form-control-user"

@@ -16,7 +16,7 @@ class AuthRedirect
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user() && $request->is('login')) {
+        if (Auth::guard('customer')->user() && $request->is('login')) {
             return redirect()->route('customer.dashboard');
         }
 
