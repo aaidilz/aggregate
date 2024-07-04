@@ -25,6 +25,6 @@ class CustomerSeeder extends Seeder
             ],
         ];
 
-        DB::table('customer')->insert($customers);
+        DB::table('customers')->insert($customers);
     }
 }

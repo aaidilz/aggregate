@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('admin', function (Blueprint $table) {
-            $table->uuid('admin_id')->primary();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->string('nama_admin');
-            $table->string('email')->unique();
-            $table->rememberToken();
+        Schema::create('parts', function (Blueprint $table) {
+            $table->uuid('part_id')->primary();
+            $table->string('part_number');
+            $table->string('part_description');
+            $table->string('part_type');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('admin');
+        Schema::dropIfExists('parts');
     }
 };
