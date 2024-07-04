@@ -14,7 +14,7 @@ class Customer extends Model implements AuthenticatableContract
 
     protected $primaryKey = 'customer_id';
     public $incrementing = false;
-    protected $table = 'customer';
+    protected $table = 'customers';
 
     protected $fillable = [
         'customer_id',
@@ -28,4 +28,9 @@ class Customer extends Model implements AuthenticatableContract
         'password',
         'remember_token',
     ];
+
+    public function ticket()
+    {
+        return $this->hasMany(Ticket::class, 'customer_id', 'customer_id');
+    }
 }
