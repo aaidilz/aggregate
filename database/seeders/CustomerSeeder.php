@@ -23,6 +23,13 @@ class CustomerSeeder extends Seeder
                 'nama_customer' => 'Customer',
                 'email' => 'customer@mail.com',
             ],
+            [
+                'customer_id' => Str::uuid(),
+                'username' => 'customer2',
+                'password' => Hash::make('customer2'),
+                'nama_customer' => 'Customer 2',
+                'email' => 'customer2@gmail.com',
+            ],
         ];
 
         DB::table('customers')->insert($customers);

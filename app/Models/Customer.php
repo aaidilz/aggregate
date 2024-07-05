@@ -29,8 +29,8 @@ class Customer extends Model implements AuthenticatableContract
         'remember_token',
     ];
 
-    public function ticket()
+    public function approvals()
     {
-        return $this->hasMany(Ticket::class, 'customer_id', 'customer_id');
+        return $this->belongsToMany(Approval::class, 'customer_approvals', 'customer_id', 'approval_id');
     }
 }

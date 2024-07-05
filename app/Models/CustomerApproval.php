@@ -6,27 +6,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Ticket extends Model
+class CustomerApproval extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $primaryKey = 'ticket_id';
+    protected $primaryKey = 'customer_approval_id';
     public $incrementing = false;
-    protected $table = 'tickets';
+    protected $table = 'customer_approvals';
 
     protected $fillable = [
-        'ticket_id',
+        'customer_approval_id',
         'customer_id',
-        'bank_name',
-        'serial_number',
-        'machine_id',
-        'machine_type',
-        'service_center',
-        'location_name',
-        'partner_code',
-        'spv_name',
-        'fse_name',
-        'fsl_name',
+        'approval_id',
     ];
 
     public function customer()
@@ -36,6 +27,6 @@ class Ticket extends Model
 
     public function approval()
     {
-        return $this->hasMany(Approval::class, 'ticket_id', 'ticket_id');
+        return $this->belongsTo(Approval::class, 'approval_id', 'approval_id');
     }
 }

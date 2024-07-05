@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('approvals', function (Blueprint $table) {
             $table->uuid('approval_id')->primary();
-            $table->uuid('ticket_id');
+            $table->uuid('service_id');
             $table->uuid('part_id');
             $table->uuid('status_id');
 
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('approval_area_remote_date')->nullable();
             $table->timestamps();
 
-            $table->foreign('ticket_id')->references('ticket_id')->on('tickets')->onDelete('cascade');
+            $table->foreign('service_id')->references('service_id')->on('services')->onDelete('cascade');
             $table->foreign('part_id')->references('part_id')->on('parts')->onDelete('cascade');
             $table->foreign('status_id')->references('status_id')->on('statuses')->onDelete('cascade');
         });

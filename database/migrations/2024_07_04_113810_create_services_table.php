@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tickets', function (Blueprint $table) {
-            $table->uuid('ticket_id')->primary();
-            $table->uuid('customer_id');
+        Schema::create('services', function (Blueprint $table) {
+            $table->uuid('service_id')->primary();
             $table->string('bank_name');
             $table->string('serial_number')->unique();
             $table->string('machine_id');
@@ -26,7 +25,6 @@ return new class extends Migration
             $table->string('fsl_name');
             $table->timestamps();
 
-            $table->foreign(('customer_id'))->references('customer_id')->on('customers')->onDelete('cascade');
         });
     }
 
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('services');
     }
 };
