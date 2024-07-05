@@ -28,7 +28,7 @@ class Service extends Model
         'fsl_name',
     ];
 
-    public function approval()
+    public function approvals()
     {
         return $this->hasMany(Approval::class, 'service_id', 'service_id');
     }

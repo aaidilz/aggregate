@@ -21,8 +21,8 @@ class Part extends Model
         'part_type',
     ];
 
-    public function approval()
+    public function approvals()
     {
-        return $this->hasMany(Approval::class, 'part_id', 'part_id');
+        return $this->belongsTo(Approval::class, 'part_id', 'part_id');
     }
 }

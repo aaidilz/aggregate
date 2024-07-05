@@ -20,12 +20,12 @@ class CustomerApproval extends Model
         'approval_id',
     ];
 
-    public function customer()
+    public function customers()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
     }
 
-    public function approval()
+    public function approvals()
     {
         return $this->belongsTo(Approval::class, 'approval_id', 'approval_id');
     }

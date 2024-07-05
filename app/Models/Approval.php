@@ -26,23 +26,18 @@ class Approval extends Model
         'approval_area_remote_date',
     ];
 
+    public function parts()
+    {
+        return $this->hasMany(Part::class, 'part_id', 'part_id');
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id', 'service_id');
     }
 
-    public function part()
-    {
-        return $this->belongsTo(Part::class, 'part_id', 'part_id');
-    }
-
     public function status()
     {
         return $this->belongsTo(Status::class, 'status_id', 'status_id');
-    }
-
-    public function customers()
-    {
-        return $this->belongsToMany(Customer::class, 'customer_approvals', 'approval_id', 'customer_id');
     }
 }

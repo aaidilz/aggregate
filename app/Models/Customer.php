@@ -31,6 +31,6 @@ class Customer extends Model implements AuthenticatableContract
 
     public function approvals()
     {
-        return $this->belongsToMany(Approval::class, 'customer_approvals', 'customer_id', 'approval_id');
+        return $this->hasManyThrough(Approval::class, CustomerApproval::class, 'customer_id', 'approval_id', 'customer_id', 'approval_id');
     }
 }

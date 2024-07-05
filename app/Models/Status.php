@@ -25,7 +25,7 @@ class Status extends Model
         'reason_description',
     ];
 
-    public function approval()
+    public function approvals()
     {
         return $this->hasMany(Approval::class, 'status_id', 'status_id');
     }
