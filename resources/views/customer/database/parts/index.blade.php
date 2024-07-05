@@ -4,10 +4,11 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                 {{-- import --}}
-                 <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> Import</a>
-                 {{-- create --}}
-                    <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
+                {{-- import --}}
+                <a href="{{ route('customer.database.part.import.index') }}" class="btn btn-primary"><i class="fa fa-plus"></i>
+                    Import</a>
+                {{-- create --}}
+                <a href="#" class="btn btn-primary"><i class="fa fa-plus"></i> Create</a>
             </div>
             <form action="#" method="GET">
                 @csrf
@@ -49,17 +50,30 @@
                             <tr>
                                 <th>No</th>
                                 <th>Serial Number</th>
-                                <th>Part Type</th>
                                 <th>Description</th>
+                                <th>Part Type</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($parts as $part)
+                                <tr>
+                                    <td>{{ $loop->iteration + $parts->firstItem() - 1 }}</td>
+                                    <td>{{ $part->part_number }}</td>
+                                    <td>{{ $part->part_description }}</td>
+                                    <td>{{ $part->part_type }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                                        <a href="#" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="card-footer">
+                {{ $parts->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

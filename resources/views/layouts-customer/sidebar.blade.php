@@ -53,8 +53,8 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Databases</h6>
-                <a class="collapse-item" href="{{ route('parts.index') }}">Parts</a>
-                <a class="collapse-item" href="{{ route('services.index') }}">Services</a>
+                <a class="collapse-item" href="{{ route('customer.database.part.index') }}">Parts</a>
+                <a class="collapse-item" href="#">Services</a>
             </div>
         </div>
     </li>
