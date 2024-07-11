@@ -1,4 +1,5 @@
 @extends('layouts-customer.dashboard-customer')
+
 @section('page-content')
     <div class="container-fluid">
         <div class="card">
@@ -66,8 +67,7 @@
                                         <form action="{{ route('customer.database.part.delete', $part->part_id) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger"><i class="fa fa-trash"></i></button>
-                                        </form>
+                                            <button type="submit" class="btn btn-danger" onclick="confirmDelete(event)"><i class="fa fa-trash"></i></button>                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -80,4 +80,30 @@
             </div>
         </div>
     </div>
+@endsection
+
+
+@section('js-tambahan')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmDelete(event) {
+        event.preventDefault();
+        const form = event.target.closest('form');
+
+        Swal.fire({
+            title: 'Hapus Part',
+            text: 'Apakah anda yakin ingin menghapus part ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+</script>
 @endsection

@@ -17,6 +17,7 @@
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
+    @notifyCss
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
     @yield('css-tambahan')
 </head>
@@ -54,6 +55,7 @@
     </a>
 
     <!-- Bootstrap core JavaScript-->
+    @notifyJs
     <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 

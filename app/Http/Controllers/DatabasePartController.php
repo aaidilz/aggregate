@@ -8,7 +8,8 @@ use App\Models\Part;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
-use Mckenziearts\Notify\Facades\Notify;
+
+use function Laravel\Prompts\confirm;
 
 class DatabasePartController extends Controller
 {
@@ -115,12 +116,11 @@ class DatabasePartController extends Controller
         try {
             $part = Part::find($part_id);
             $part->delete();
-            notify()->success('Part berhasil dihapus');
+            notify()->success('Part berhasil dihapus', 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
-            notify()->error('Part gagal dihapus');
+            notify()->error('Part gagal dihapus', 'Error');
             return redirect()->back();
         }
     }
-
 }

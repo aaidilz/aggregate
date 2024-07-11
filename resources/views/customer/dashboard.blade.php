@@ -1,5 +1,4 @@
 @extends('layouts-customer.dashboard-customer')
-@notifyCss
 @section('page-content')
 {{-- hello world --}}
 <div class="container">
@@ -10,4 +9,3 @@
     </div>
 </div>
 @endsection
-@notifyJs
