@@ -1,5 +1,4 @@
 @extends('layouts-customer.dashboard-customer')
-
 @section('page-content')
     <div class="container-fluid">
         <div class="card">
@@ -63,8 +62,12 @@
                                     <td>{{ $part->part_description }}</td>
                                     <td>{{ $part->part_type }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-warning"><i class="fa fa-edit"></i></a>
-                                        <a href="#" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                        <a href="{{ route('customer.database.part.details', $part->part_id) }}" class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                                        <form action="{{ route('customer.database.part.delete', $part->part_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" onclick="return confirm('Are you sure?')" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach

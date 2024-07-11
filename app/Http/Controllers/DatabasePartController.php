@@ -8,6 +8,7 @@ use App\Models\Part;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
+use Mckenziearts\Notify\Facades\Notify;
 
 class DatabasePartController extends Controller
 {
@@ -80,5 +81,46 @@ class DatabasePartController extends Controller
 
     // EXPORT SECTION
 
+    // CRUD SECTION
+    public function showDetails($part_id)
+    {
+        $part = Part::find($part_id);
+        return view('customer.database.parts.details', compact('part'));
+    }
+
+    public function update(Request $request, $part_id)
+    {
+        try {
+            $request->validate([
+                'part_number' => 'required',
+                'part_description' => 'required',
+                'part_type' => 'required'
+            ]);
+
+            $part = Part::find($part_id);
+            $part->part_number = $request->part_number;
+            $part->part_description = $request->part_description;
+            $part->part_type = $request->part_type;
+
+            $part->save();
+
+            return redirect()->back()->with('success', 'Part berhasil di update');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'gagal mengupdate data part');
+        }
+    }
+
+    public function destroy($part_id)
+    {
+        try {
+            $part = Part::find($part_id);
+            $part->delete();
+            notify()->success('Part berhasil dihapus');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            notify()->error('Part gagal dihapus');
+            return redirect()->back();
+        }
+    }
 
 }
