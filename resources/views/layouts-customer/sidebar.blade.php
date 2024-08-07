@@ -54,7 +54,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Databases</h6>
                 <a class="collapse-item" href="{{ route('customer.database.part.index') }}">Parts</a>
-                <a class="collapse-item" href="#">Services</a>
+                <a class="collapse-item" href="{{ route('customer.database.service.index') }}">Services</a>
             </div>
         </div>
     </li>

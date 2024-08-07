@@ -26,7 +26,7 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">{{ $part->part_number }}</h3>
+                <h3 class="card-title">{{ $part->part_description }}</h3>
             </div>
             <form action="{{ route('customer.database.part.update', $part->part_id) }}" method="POST">
                 @csrf
@@ -63,5 +63,4 @@
             </form>
         </div>
     </div>
-@
 @endsection

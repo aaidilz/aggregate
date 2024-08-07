@@ -15,6 +15,7 @@ class ExportPartData implements FromCollection, WithHeadings, WithStyles
         return Part::select('part_number', 'part_description', 'part_type')->get();
     }
 
+
     public function headings(): array
     {
         return [
@@ -27,7 +28,17 @@ class ExportPartData implements FromCollection, WithHeadings, WithStyles
     public function styles(Worksheet $sheet)
     {
         return [
-            1    => ['font' => ['normal' => true], 'fill' => ['fillType' => 'solid', 'startColor' => ['rgb' => '4472C4']]],
+            1    => [
+                'font' => ['normal' => true],
+                'fill' => [
+                    'fillType' => 'solid',
+                    'startColor' => ['rgb' => '4472C4']
+                ],
+                'alignment' => [
+                    'horizontal' => 'left',
+                    'vertical' => 'center'
+                ]
+            ],
         ];
     }
 }

@@ -24,16 +24,19 @@ Route::middleware('auth:customer')->prefix('customer')->group(function () {
     Route::get('/parts/detail/{part_id}', [DatabasePartController::class, 'showDetails'])->name('customer.database.part.details');
     Route::put('/parts/detail/{part_id}', [DatabasePartController::class, 'update'])->name('customer.database.part.update');
     Route::delete('/parts/delete/{part_id}', [DatabasePartController::class, 'destroy'])->name('customer.database.part.delete');
-
     Route::get('/parts/import', [DatabasePartController::class, 'showImportForm'])->name('customer.database.part.import.index');
     Route::post('/parts/import', [DatabasePartController::class, 'import'])->name('customer.database.part.import');
-    // get excel template
     Route::get('/parts/export-template', [DatabasePartController::class, 'exportTemplate'])->name('customer.database.part.export-template');
-
+    Route::get('/parts/export', [DatabasePartController::class, 'export'])->name('customer.database.part.export');
 
     // Route Services
-    Route::get('/services', [DatabaseServiceController::class, 'index'])->name('customer.service.index');
+    Route::get('/services', [DatabaseServiceController::class, 'index'])->name('customer.database.service.index');
 
+    // import
+    Route::get('/services/import', [DatabaseServiceController::class, 'showImportForm'])->name('customer.database.service.import.index');
+    Route::post('/services/import', [DatabaseServiceController::class, 'import'])->name('customer.database.service.import');
+    Route::get('/services/export-template', [DatabaseServiceController::class, 'exportTemplate'])->name('customer.database.service.export-template');
+    Route::get('/services/export', [DatabaseServiceController::class, 'export'])->name('customer.database.service.export');
 });
 
 // routes login admin

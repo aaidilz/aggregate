@@ -4,10 +4,8 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <a href="#" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add Ticket</a>
-                <a href="#" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Import</a>
+                <a href="{{ route('customer.database.service.import') }}" class="btn btn-primary"><i class="fas fa-plus"></i>
+                    Import</a>
             </div>
             <form action="#" method="GET">
                 @csrf

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportPartData;
 use App\Exports\ExportTemplatePart;
 use App\Imports\ImportPart;
 use App\Models\Part;
@@ -9,16 +10,26 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\HeadingRowImport;
 
-use function Laravel\Prompts\confirm;
-
 class DatabasePartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $parts = Part::Paginate(10);
+        $query = Part::query();
+
+        if ($request->filled('part_number')) {
+            $query->where('part_number', 'like', '%' . $request->input('part_number') . '%');
+        }
+
+        if ($request->filled('part_type')) {
+            $query->where('part_type', 'like', '%' . $request->input('part_type') . '%');
+        }
+
+        $parts = $query->paginate(10);
         $partTypes = Part::select('part_type')->distinct()->get();
-        return view('customer.database.parts.index', compact('parts', 'partTypes'));
+
+        return view('customer.database.parts.index', compact('parts', 'partTypes', 'request'));
     }
+
 
     // IMPORT SECTION
     public function showImportForm()
@@ -81,6 +92,10 @@ class DatabasePartController extends Controller
     }
 
     // EXPORT SECTION
+    public function export()
+    {
+        return Excel::download(new ExportPartData, 'part.xlsx');
+    }
 
     // CRUD SECTION
     public function showDetails($part_id)
@@ -90,26 +105,48 @@ class DatabasePartController extends Controller
     }
 
     public function update(Request $request, $part_id)
-    {
-        try {
-            $request->validate([
-                'part_number' => 'required',
-                'part_description' => 'required',
-                'part_type' => 'required'
-            ]);
+{
+    try {
+        $request->validate([
+            'part_number' => 'required',
+            'part_description' => 'required',
+            'part_type' => 'required'
+        ]);
 
-            $part = Part::find($part_id);
+        $part = Part::find($part_id);
+
+        // Check if the data has changed
+        $dataHasChanged = false;
+
+        if ($part->part_number !== $request->part_number) {
             $part->part_number = $request->part_number;
-            $part->part_description = $request->part_description;
-            $part->part_type = $request->part_type;
-
-            $part->save();
-
-            return redirect()->back()->with('success', 'Part berhasil di update');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'gagal mengupdate data part');
+            $dataHasChanged = true;
         }
+
+        if ($part->part_description !== $request->part_description) {
+            $part->part_description = $request->part_description;
+            $dataHasChanged = true;
+        }
+
+        if ($part->part_type !== $request->part_type) {
+            $part->part_type = $request->part_type;
+            $dataHasChanged = true;
+        }
+
+        if ($dataHasChanged) {
+            $part->save();
+            notify()->success('Part berhasil diupdate', 'Success');
+        } else {
+            notify()->info('Tidak ada perubahan', 'Data sama');
+        }
+
+        return redirect()->back();
+
+    } catch (\Exception $e) {
+        notify()->error('Part gagal diupdate', 'Error');
+        return redirect()->back();
     }
+}
 
     public function destroy($part_id)
     {
