@@ -21,6 +21,7 @@ Route::middleware('auth:customer')->prefix('customer')->group(function () {
     // Route Approval
     Route::get('/approvals', [ApprovalController::class, 'index'])->name('customer.approval.index');
     Route::get('/approvals/create', [ApprovalController::class, 'create'])->name('customer.approval.create');
+    Route::post('/approvals/create', [ApprovalController::class, 'createApproval'])->name('customer.approval.create-approval');
     // Route DB
     // Route Parts
     Route::get('/parts', [DatabasePartController::class, 'index'])->name('customer.database.part.index');
