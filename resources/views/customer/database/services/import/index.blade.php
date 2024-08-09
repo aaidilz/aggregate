@@ -30,7 +30,7 @@
             <div class="card-header py-3">
                 <h1 class="m-0 font-weight-bold text-primary">Import Services</h1>
             </div>
-            <form action="{{ route('customer.database.service.import') }}" method="POST" enctype="multiservice/form-data">
+            <form action="{{ route('customer.database.service.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="card-body">
                     <div class="form-group">

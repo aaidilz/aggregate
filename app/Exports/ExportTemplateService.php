@@ -12,13 +12,16 @@ class ExportTemplateService implements WithHeadings, WithStyles
     public function headings(): array
     {
         return [
-            'serial_number',
-            'machine_type',
-            'service_center',
-            'partner_code',
-            'spv_name',
-            'fse_name',
-            'bank_name',
+            'Bank Name',
+            'Serial Number',
+            'Machine ID',
+            'Machine Type',
+            'Service Center',
+            'Location Name',
+            'Partner Code',
+            'SPV Name',
+            'FSE Name',
+            'FSL Name',
         ];
     }
 

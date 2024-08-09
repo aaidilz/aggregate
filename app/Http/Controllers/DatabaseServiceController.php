@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExportTemplateService;
+use App\Imports\ImportService;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 
 class DatabaseServiceController extends Controller
 {
@@ -60,14 +62,15 @@ class DatabaseServiceController extends Controller
 
     public function import(Request $request)
     {
-       $request->validate(
-        [
-            'file' => 'required|mimes:xlsx,xls'
-        ],
-        [
-            'file.required' => 'File yang diunggah tidak boleh kosong',
-            'file.mimes' => 'File yang diunggah harus berformat .xlsx atau .xls'
-        ]
+        // Validasi file upload
+        $request->validate(
+            [
+                'file' => 'required|mimes:xlsx,xls'
+            ],
+            [
+                'file.required' => 'File yang diunggah tidak boleh kosong',
+                'file.mimes' => 'File yang diunggah harus berformat .xlsx atau .xls'
+            ]
         );
 
         // Mendapatkan ekstensi file yang diunggah
@@ -77,8 +80,39 @@ class DatabaseServiceController extends Controller
             return redirect()->back()->with('error', 'File yang diunggah tidak memiliki ekstensi yang valid. Hanya file dengan ekstensi .xlsx atau .xls yang diizinkan.');
         }
 
-        // Import data dari file excel
-        // continue here....
+        // Mendefinisikan heading yang dibutuhkan
+        $requiredHeadings = [
+            'bank_name',
+            'machine_id',
+            'machine_type',
+            'service_center',
+            'location_name',
+            'partner_code',
+            'spv_name',
+            'fse_name',
+            'fsl_name'
+        ];
+
+        // Mengambil heading dari file Excel
+        $headings = (new HeadingRowImport)->toArray($request->file('file'))[0][0];
+
+        // Memeriksa apakah semua heading yang dibutuhkan ada dalam file
+        foreach ($requiredHeadings as $requiredHeading) {
+            if (!in_array($requiredHeading, $headings)) {
+                return redirect()->back()
+                    ->with('error', 'Data Part gagal diimport, pastikan file yang diupload sesuai dengan format template yang ditentukan');
+            }
+        }
+
+        // Proses import dengan Excel
+        try {
+            Excel::import(new ImportService, $request->file('file'));
+            return redirect()->back()
+                ->with('success', 'Data Part berhasil diimport');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Data Part gagal diimport, pastikan file yang diupload sesuai dengan format yang ditentukan');
+        }
     }
 
 

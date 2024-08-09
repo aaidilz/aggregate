@@ -82,7 +82,6 @@
                                 <label for="fse_name">FSE Name</label>
                                 <select class="form-control" id="fse_name" name="fse_name">
                                     <option value="">-- Select FSE Name --</option>
-
                                 </select>
                             </div>
                         </div>
@@ -121,13 +120,29 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($services as $service)
+                                <tr>
+                                    <td>{{ $loop->iteration + $services->firstItem() - 1 }}</td>
+                                    <td>{{ $service->bank_name }}</td>
+                                    <td>{{ $service->serial_number }}</td>
+                                    <td>{{ $service->machine_id }}</td>
+                                    <td>{{ $service->machine_type }}</td>
+                                    <td>{{ $service->service_center }}</td>
+                                    <td>{{ $service->location_name }}</td>
+                                    <td>{{ $service->partner_code }}</td>
+                                    <td>{{ $service->spv_name }}</td>
+                                    <td>{{ $service->fse_name }}</td>
+                                    <td>{{ $service->fsl_name }}</td>
+                                    <td>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="card-footer">
-
+                {{$services->links('pagination::bootstrap-5')}}
             </div>
         </div>
     </div>
