@@ -12,9 +12,9 @@ class ExportTemplatePart implements WithHeadings, WithStyles
    public function headings(): array
    {
        return [
-           'part_number',
-           'part_description',
-           'part_type'
+           'Part Number',
+           'Part Description',
+           'Part Type',
        ];
    }
 

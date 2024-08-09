@@ -28,14 +28,16 @@ class Approval extends Model
 
     public function parts()
     {
-        return $this->hasMany(Part::class, 'part_id', 'part_id');
+        return $this->belongsToMany(Part::class, 'approval_parts', 'approval_id', 'part_id');
     }
 
+    // Relasi ke tabel Services
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id', 'service_id');
     }
 
+    // Relasi ke tabel Statuses
     public function status()
     {
         return $this->belongsTo(Status::class, 'status_id', 'status_id');

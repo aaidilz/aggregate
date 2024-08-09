@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\DashboardCustomerController;
 use App\Http\Controllers\DatabasePartController;
@@ -17,7 +18,9 @@ Route::post('/logout-customer', [LoginCustomerController::class, 'logout'])->nam
 Route::middleware('auth:customer')->prefix('customer')->group(function () {
     Route::get('/', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
     Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
-
+    // Route Approval
+    Route::get('/approvals', [ApprovalController::class, 'index'])->name('customer.approval.index');
+    Route::get('/approvals/create', [ApprovalController::class, 'create'])->name('customer.approval.create');
     // Route DB
     // Route Parts
     Route::get('/parts', [DatabasePartController::class, 'index'])->name('customer.database.part.index');
@@ -31,6 +34,7 @@ Route::middleware('auth:customer')->prefix('customer')->group(function () {
 
     // Route Services
     Route::get('/services', [DatabaseServiceController::class, 'index'])->name('customer.database.service.index');
+    // NEXT: Add route to show details of a service
 
     // import
     Route::get('/services/import', [DatabaseServiceController::class, 'showImportForm'])->name('customer.database.service.import.index');

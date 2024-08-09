@@ -30,7 +30,7 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link" href="charts.html">
+        <a class="nav-link" href="{{ route('customer.approval.index') }}">
             <i class="fa fa-fw fa-cube"></i>
             <span>Approvals</span></a>
     </li>
