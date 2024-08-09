@@ -14,20 +14,28 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="serial_number">Serial Number</label>
-                                <input type="text" class="form-control" id="serial_number" name="serial_number">
+                                <input type="text" class="form-control" id="serial_number" name="serial_number"
+                                    value="{{ old('serial_number', $request->serial_number) }}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="machine_id">Machine ID</label>
-                                <input type="text" class="form-control" id="machine_id" name="machine_id">
+                                <input type="text" class="form-control" id="machine_id" name="machine_id"
+                                    value="{{ old('machine_id', $request->machine_id) }}">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="machine_type">Machine Type</label>
-                                <select class="form-control" id="machine_type" name="machine_type">
+                                <select class="form-control" id="machine_type" name="machine_type"">
                                     <option value="">-- Select Machine Type --</option>
+                                    @foreach ($machineTypes as $machineType)
+                                        <option value="{{ $machineType->machine_type }}"
+                                            {{ old('machine_type', $request->machine_type) == $machineType->machine_type ? 'selected' : '' }}>
+                                            {{ $machineType->machine_type }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -38,50 +46,70 @@
                                 <label for="service_center">Service Center</label>
                                 <select class="form-control" id="service_center" name="service_center">
                                     <option value="">-- Select Service Center --</option>
-
+                                    @foreach ($serviceCenters as $serviceCenter)
+                                        <option value="{{ $serviceCenter->service_center }}"
+                                            {{ old('service_center', $request->service_center) == $serviceCenter->service_center ? 'selected' : '' }}>
+                                            {{ $serviceCenter->service_center }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="location_name">Location Name</label>
-                                <input type="text" class="form-control" id="location_name" name="location_name">
+                                <label for="customer">Customer</label>
+                                <select class="form-control" id="customer" name="customer">
+                                    <option value="">-- Select Customer --</option>
+                                    @foreach ($bankNames as $bankName)
+                                        <option value="{{ $bankName->bank_name }}"
+                                            {{ old('customer', $request->customer) == $bankName->bank_name ? 'selected' : '' }}>
+                                            {{ $bankName->bank_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="customer">Customer</label>
-                                <select class="form-control" id="customer" name="customer">
-                                    <option value="">-- Select Customer --</option>
-
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="partner_code">Partner Code</label>
                                 <select class="form-control" id="partner_code" name="partner_code">
                                     <option value="">-- Select Partner Code --</option>
-
+                                    @foreach ($partnerCodes as $partnerCode)
+                                        <option value="{{ $partnerCode->partner_code }}"
+                                            {{ old('partner_code', $request->partner_code) == $partnerCode->partner_code ? 'selected' : '' }}>
+                                            {{ $partnerCode->partner_code }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="spv_name">SPV Name</label>
                                 <select class="form-control" id="spv_name" name="spv_name">
                                     <option value="">-- Select SPV Name --</option>
-
+                                    @foreach ($SPVNames as $SPVName)
+                                        <option value="{{ $SPVName->spv_name }}"
+                                            {{ old('spv_name', $request->spv_name) == $SPVName->spv_name ? 'selected' : '' }}>
+                                            {{ $SPVName->spv_name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="fse_name">FSE Name</label>
                                 <select class="form-control" id="fse_name" name="fse_name">
                                     <option value="">-- Select FSE Name --</option>
+                                    @foreach ($FSENames as $FSEName)
+                                        <option value="{{ $FSEName->fse_name }}"
+                                            {{ old('fse_name', $request->fse_name) == $FSEName->fse_name ? 'selected' : '' }}>
+                                            {{ $FSEName->fse_name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>
@@ -138,11 +166,16 @@
                                 </tr>
                             @endforeach
                         </tbody>
+                        @if ($services->isEmpty())
+                            <tr>
+                                <td colspan="12" class="text-center">Tidak ada data</td>
+                            </tr>
+                        @endif
                     </table>
                 </div>
             </div>
             <div class="card-footer">
-                {{$services->links('pagination::bootstrap-5')}}
+                {{ $services->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

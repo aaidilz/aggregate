@@ -47,11 +47,11 @@ class DatabaseServiceController extends Controller
         $machineTypes = Service::select('machine_type')->distinct()->get();
         $FSENames = Service::select('fse_name')->distinct()->get();
         $SPVNames = Service::select('spv_name')->distinct()->get();
-        $PartnerCodes = Service::select('partner_code')->distinct()->get();
-        $ServiceCenters = Service::select('service_center')->distinct()->get();
-        $BankNames = Service::select('bank_name')->distinct()->get();
+        $partnerCodes = Service::select('partner_code')->distinct()->get();
+        $serviceCenters = Service::select('service_center')->distinct()->get();
+        $bankNames = Service::select('bank_name')->distinct()->get();
 
-        return view('customer.database.services.index', compact('services', 'machineTypes', 'FSENames', 'SPVNames', 'PartnerCodes', 'ServiceCenters', 'BankNames', 'request'));
+        return view('customer.database.services.index', compact('services', 'machineTypes', 'FSENames', 'SPVNames', 'partnerCodes', 'serviceCenters', 'bankNames', 'request'));
     }
 
     // IMPORT SECTION
