@@ -54,7 +54,8 @@
         <div class="card">
             <div class="card-header">
                 {{-- details --}}
-                <a href="{{ route('customer.approval.details') }}" class="btn btn-secondary"><i class=" fa fa-list"></i> Action Mode </a>
+                <a href="{{ route('customer.approval.index') }}" class="btn btn-danger"><i class=" fa fa-list"></i> Hide
+                    Action Mode </a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -85,6 +86,7 @@
                                 <th>SN Part Bad </th>
                                 <th>Status Part Used</th>
                                 <th>Reason Description</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,10 +94,14 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $approval->entry_ticket }}</td>
-                                    <td>{{ $approval->request_date ? Carbon::parse($approval->request_date)->format('n/j/y g:i A') : '' }}</td>
-                                    <td>{{ $approval->approval_date ? Carbon::parse($approval->approval_date)->format('n/j/y g:i A') : '' }}</td>
-                                    <td>{{ $approval->create_zulu_date ? Carbon::parse($approval->create_zulu_date)->format('n/j/y g:i A') : '' }}</td>
-                                    <td>{{ $approval->approval_area_remote_date ? Carbon::parse($approval->approval_area_remote_date)->format('n/j/y g:i A') : '' }}</td>
+                                    <td>{{ $approval->request_date ? Carbon::parse($approval->request_date)->format('n/j/y g:i A') : '' }}
+                                    </td>
+                                    <td>{{ $approval->approval_date ? Carbon::parse($approval->approval_date)->format('n/j/y g:i A') : '' }}
+                                    </td>
+                                    <td>{{ $approval->create_zulu_date ? Carbon::parse($approval->create_zulu_date)->format('n/j/y g:i A') : '' }}
+                                    </td>
+                                    <td>{{ $approval->approval_area_remote_date ? Carbon::parse($approval->approval_area_remote_date)->format('n/j/y g:i A') : '' }}
+                                    </td>
                                     <td>{{ $approval->service->serial_number }}</td>
                                     <td>{{ $approval->service->bank_name }}</td>
                                     <td>{{ $approval->service->machine_id }}</td>
@@ -127,6 +133,14 @@
                                     <td>{{ $approval->status->SN_part_bad }}</td>
                                     <td>{{ $approval->status->status_part_used }}</td>
                                     <td>{{ $approval->status->reason_description }}</td>
+                                    <td>
+                                        <a href="{{ route('customer.approval.edit', $approval->approval_id) }}"
+                                            class="btn btn-warning"><i class="fa fa-edit"></i></a>
+                                        <form action="{{ route('customer.approval.delete', $approval->approval_id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this item?');"><i class="fa fa-trash"></i></button>
+                                        </form>
                                 </tr>
                             @endforeach
                         </tbody>
