@@ -58,7 +58,7 @@
                                 <th>Serial Number</th>
                                 <th>Description</th>
                                 <th>Part Type</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -68,7 +68,7 @@
                                     <td>{{ $part->part_number }}</td>
                                     <td>{{ $part->part_description }}</td>
                                     <td>{{ $part->part_type }}</td>
-                                    <td>
+                                    {{-- <td>
                                         <a href="{{ route('customer.database.part.details', $part->part_id) }}"
                                             class="btn btn-warning"><i class="fa fa-edit"></i></a>
                                         <form action="{{ route('customer.database.part.delete', $part->part_id) }}"
@@ -78,7 +78,7 @@
                                             <button type="submit" class="btn btn-danger" onclick="confirmDelete(event)"><i
                                                     class="fa fa-trash"></i></button>
                                         </form>
-                                    </td>
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>

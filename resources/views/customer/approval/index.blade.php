@@ -1,3 +1,7 @@
+@php
+    use carbon\carbon;
+@endphp
+
 @extends('layouts-customer.dashboard-customer')
 @section('page-content')
     <div class="container-fluid">
@@ -86,10 +90,10 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $approval->entry_ticket }}</td>
-                                    <td>{{ $approval->request_date }}</td>
-                                    <td>{{ $approval->approval_date }}</td>
-                                    <td>{{ $approval->create_zulu_date }}</td>
-                                    <td>{{ $approval->approval_area_remote_date }}</td>
+                                    <td>{{ $approval->request_date ? Carbon::parse($approval->request_date)->format('n/j/y g:i A') : '' }}</td>
+                                    <td>{{ $approval->approval_date ? Carbon::parse($approval->approval_date)->format('n/j/y g:i A') : '' }}</td>
+                                    <td>{{ $approval->create_zulu_date ? Carbon::parse($approval->create_zulu_date)->format('n/j/y g:i A') : '' }}</td>
+                                    <td>{{ $approval->approval_area_remote_date ? Carbon::parse($approval->approval_area_remote_date)->format('n/j/y g:i A') : '' }}</td>
                                     <td>{{ $approval->service->serial_number }}</td>
                                     <td>{{ $approval->service->bank_name }}</td>
                                     <td>{{ $approval->service->machine_id }}</td>

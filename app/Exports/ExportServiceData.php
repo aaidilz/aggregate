@@ -2,26 +2,43 @@
 
 namespace App\Exports;
 
-use App\Models\Part;
+use App\Models\Service;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ExportPartData implements FromCollection, WithHeadings, WithStyles
+class ExportServiceData implements FromCollection, WithHeadings, WithStyles
 {
     public function collection()
     {
-        return Part::select('part_number', 'part_description', 'part_type')->get();
+        return Service::select(
+            'bank_name',
+            'serial_number',
+            'machine_id',
+            'machine_type',
+            'service_center',
+            'location_name',
+            'partner_code',
+            'spv_name',
+            'fse_name',
+            'fsl_name',
+        )->get();
     }
-
 
     public function headings(): array
     {
         return [
-            'Part Number',
-            'Part Description',
-            'Part Type',
+            'Bank Name',
+            'Serial Number',
+            'Machine ID',
+            'Machine Type',
+            'Service Center',
+            'Location Name',
+            'Partner Code',
+            'SPV Name',
+            'FSE Name',
+            'FSL Name',
         ];
     }
 

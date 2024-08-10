@@ -25,9 +25,9 @@ Route::middleware('auth:customer')->prefix('customer')->group(function () {
     // Route DB
     // Route Parts
     Route::get('/parts', [DatabasePartController::class, 'index'])->name('customer.database.part.index');
-    Route::get('/parts/detail/{part_id}', [DatabasePartController::class, 'showDetails'])->name('customer.database.part.details');
-    Route::put('/parts/detail/{part_id}', [DatabasePartController::class, 'update'])->name('customer.database.part.update');
-    Route::delete('/parts/delete/{part_id}', [DatabasePartController::class, 'destroy'])->name('customer.database.part.delete');
+    // Route::get('/parts/detail/{part_id}', [DatabasePartController::class, 'showDetails'])->name('customer.database.part.details');
+    // Route::put('/parts/detail/{part_id}', [DatabasePartController::class, 'update'])->name('customer.database.part.update');
+    // Route::delete('/parts/delete/{part_id}', [DatabasePartController::class, 'destroy'])->name('customer.database.part.delete');
     Route::get('/parts/import', [DatabasePartController::class, 'showImportForm'])->name('customer.database.part.import.index');
     Route::post('/parts/import', [DatabasePartController::class, 'import'])->name('customer.database.part.import');
     Route::get('/parts/export-template', [DatabasePartController::class, 'exportTemplate'])->name('customer.database.part.export-template');

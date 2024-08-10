@@ -6,6 +6,8 @@
             <div class="card-header">
                 <a href="{{ route('customer.database.service.import') }}" class="btn btn-primary"><i class="fas fa-plus"></i>
                     Import</a>
+                <a href="{{ route('customer.database.service.export') }}" class="btn btn-success"><i class="fas fa-download"></i>
+                    Export</a>
             </div>
             <form action="#" method="GET">
                 @csrf

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportServiceData;
 use App\Exports\ExportTemplateService;
 use App\Imports\ImportService;
 use App\Models\Service;
@@ -120,5 +121,10 @@ class DatabaseServiceController extends Controller
     public function exportTemplate()
     {
         return Excel::download(new ExportTemplateService, 'service_template.xlsx');
+    }
+
+    public function export()
+    {
+        return Excel::download(new ExportServiceData, 'service.xlsx');
     }
 }
