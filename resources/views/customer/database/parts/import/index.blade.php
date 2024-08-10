@@ -29,6 +29,8 @@
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h1 class="m-0 font-weight-bold text-primary">Import Parts</h1>
+                <a href="{{ route('customer.database.part.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Back</a>
+                <a href="{{ route('customer.database.part.export-template') }}" class="btn btn-success"><i class="fa fa-download"></i> Download template</a>
             </div>
             <form action="{{ route('customer.database.part.import') }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -39,8 +41,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Import</button>
-                    <a href="{{ route('customer.database.part.export-template') }}" class="btn btn-success">Download template</a>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
                 </div>
             </form>
         </div>

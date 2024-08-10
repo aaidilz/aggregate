@@ -118,7 +118,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Search</button>
                 </div>
             </form>
         </div>

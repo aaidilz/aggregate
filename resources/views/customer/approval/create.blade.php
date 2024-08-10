@@ -26,6 +26,8 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
+                <a href="{{ route('customer.approval.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Back</a>
+
             </div>
             <form action="{{ route('customer.approval.create-approval') }}" method="POST">
                 @csrf
@@ -140,7 +142,7 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Submit</button>
                 </div>
             </form>
         </div>
