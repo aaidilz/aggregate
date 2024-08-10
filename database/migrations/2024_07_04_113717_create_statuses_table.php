@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('status_id')->primary();
             $table->enum('status_part', ['Ready', 'Pending Part CWH', 'SOH', 'Pending Part Kota Terusan'])->nullable();
             $table->enum('email_request', ['Non Area Remote', 'Area Remote'])->nullable();
-            $table->enum('status_email_request', ['Passed', 'Need Approval']);
+            $table->enum('status_email_request', ['Passed', 'Need Approval'])->nullable();
             $table->string('SN_part_good')->nullable();
             $table->string('SN_part_bad')->nullable();
             $table->enum('status_part_used', ['Defective', 'Good', 'DOA', 'Consume'])->nullable();

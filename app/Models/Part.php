@@ -23,6 +23,6 @@ class Part extends Model
 
     public function approvals()
     {
-        return $this->belongsTo(Approval::class, 'part_id', 'part_id');
+        return $this->belongsToMany(Approval::class, 'approval_parts', 'part_id', 'approval_id');
     }
 }

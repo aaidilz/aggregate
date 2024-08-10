@@ -78,21 +78,62 @@
                                 <th>SN Part Good</th>
                                 <th>SN Part Bad </th>
                                 <th>Status Part Used</th>
+                                <th>Reason Description</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            @foreach ($approvals as $approval)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $approval->entry_ticket }}</td>
+                                    <td>{{ $approval->request_date }}</td>
+                                    <td>{{ $approval->approval_date }}</td>
+                                    <td>{{ $approval->create_zulu_date }}</td>
+                                    <td>{{ $approval->approval_area_remote_date }}</td>
+                                    <td>{{ $approval->service->serial_number }}</td>
+                                    <td>{{ $approval->service->bank_name }}</td>
+                                    <td>{{ $approval->service->machine_id }}</td>
+                                    <td>{{ $approval->service->location_name }}</td>
+                                    <td>{{ $approval->service->service_center }}</td>
+                                    <td>{{ $approval->service->fse_name }}</td>
+                                    <td>{{ $approval->service->spv_name }}</td>
+                                    <td>{{ $approval->service->fsl_name }}</td>
+                                    <td>{{ $approval->service->partner_code }}</td>
+                                    <!-- Display parts with bullet points -->
+                                    <td>
+                                        <ul>
+                                            @foreach ($approval->parts as $part)
+                                                <li>{{ $part->part_number }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul>
+                                            @foreach ($approval->parts as $part)
+                                                <li>{{ $part->part_description }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>{{ $approval->status->status_part }}</td>
+                                    <td>{{ $approval->status->email_request }}</td>
+                                    <td>{{ $approval->status->status_email_request }}</td>
+                                    <td>{{ $approval->status->SN_part_good }}</td>
+                                    <td>{{ $approval->status->SN_part_bad }}</td>
+                                    <td>{{ $approval->status->status_part_used }}</td>
+                                    <td>{{ $approval->status->reason_description }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
-                        {{-- @if ($services->isEmpty())
+                        @if ($approvals->isEmpty())
                             <tr>
-                                <td colspan="12" class="text-center">Tidak ada data</td>
+                                <td colspan="24" class="text-center">Tidak ada data</td>
                             </tr>
-                        @endif --}}
+                        @endif
                     </table>
                 </div>
             </div>
             <div class="card-footer">
-                {{-- {{ $services->links('pagination::bootstrap-5') }} --}}
+                {{ $approvals->links('pagination::bootstrap-5') }}
             </div>
         </div>
     </div>

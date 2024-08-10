@@ -59,22 +59,22 @@
                         <div class="col-md-3">
                             <label for="request_date">Request Date</label>
                             <input type="datetime-local" name="request_date" id="request_date" class="form-control"
-                                onpaste="handlePaste(event)" required>
+                                onpaste="handlePaste(event)" required value="{{ old('request_date') }}">
                         </div>
                         <div class="col-md-3">
                             <label for="approval_date">Approval Date</label>
                             <input type="datetime-local" name="approval_date" id="approval_date" class="form-control"
-                                onpaste="handlePaste(event)">
+                                onpaste="handlePaste(event)" value="{{ old('approval_date') }}">
                         </div>
                         <div class="col-md-3">
                             <label for="create_zulu_date">Zulu Date</label>
                             <input type="datetime-local" name="create_zulu_date" id="create_zulu_date" class="form-control"
-                                onpaste="handlePaste(event)">
+                                onpaste="handlePaste(event)" value="{{ old('create_zulu_date') }}">
                         </div>
                         <div class="col-md-3">
                             <label for="approval_area_remote_date">Approval Area Remote Date</label>
                             <input type="datetime-local" name="approval_area_remote_date" id="approval_area_remote_date"
-                                class="form-control" onpaste="handlePaste(event)">
+                                class="form-control" onpaste="handlePaste(event)" value="{{ old('approval_area_remote_date') }}">
                         </div>
                     </div>
                     <div class="row">
@@ -111,11 +111,11 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="SN_part_good">SN Part Good</label>
-                                    <input type="text" name="SN_part_good" id="SN_part_good" class="form-control">
+                                    <input type="text" name="SN_part_good" id="SN_part_good" class="form-control" value="{{ old('SN_part_good') }}">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="SN_part_bad">SN Part Bad</label>
-                                    <input type="text" name="SN_part_bad" id="SN_part_bad" class="form-control">
+                                    <input type="text" name="SN_part_bad" id="SN_part_bad" class="form-control" value="{{ old('SN_part_bad') }}">
                                 </div>
                             </div>
                             <div class="row">
@@ -134,7 +134,7 @@
                         <div class="col-md-6">
                             <div class="col-md-12">
                                 <label for="reason_description">Reason Description</label>
-                                <textarea name="reason_description" id="reason_description" class="form-control" rows="4"></textarea>
+                                <textarea name="reason_description" id="reason_description" class="form-control" rows="4">{{ old('reason_description') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -187,5 +187,90 @@
                 });
             }
         });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var emailRequest = document.getElementById('email_request');
+            var statusEmailRequest = document.getElementById('status_email_request');
+
+            emailRequest.addEventListener('change', function() {
+                if (emailRequest.value === 'Non Area Remote') {
+                    statusEmailRequest.value = 'Passed';
+                } else if (emailRequest.value === 'Area Remote') {
+                    statusEmailRequest.value = 'Need Approval';
+                } else {
+                    statusEmailRequest.value = ''; // Mengatur ulang jika tidak ada yang dipilih
+                }
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var approvalDate = document.getElementById('approval_area_remote_date');
+            var statusEmailRequest = document.getElementById('status_email_request');
+
+            approvalDate.addEventListener('change', function() {
+                if (approvalDate.value) {
+                    statusEmailRequest.value = 'Passed';
+                } else {
+                    statusEmailRequest.value = ''; // Reset jika field dikosongkan kembali
+                }
+            });
+        });
+    </script>
+
+    <script>
+        function handlePaste(event) {
+            // Prevent the default paste behavior
+            event.preventDefault();
+
+            // Get the pasted data from the clipboard
+            const pasteData = event.clipboardData.getData('text');
+
+            // Try to parse the date from the pasted data
+            const parsedDate = parseDate(pasteData);
+            if (parsedDate) {
+                // Format the date to the datetime-local format
+                const formattedDate = formatDateToLocal(parsedDate);
+                // Set the value of the input field
+                event.target.value = formattedDate;
+            } else {
+                alert('Invalid date format. Please use "M/D/YY h:mm AM/PM" format.');
+            }
+        }
+
+        function parseDate(dateString) {
+            // Regex to match the date format "M/D/YY h:mm AM/PM"
+            const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{2})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i;
+            const match = dateString.match(regex);
+
+            if (!match) return null;
+
+            let [_, month, day, year, hour, minute, period] = match;
+            month = parseInt(month, 10);
+            day = parseInt(day, 10);
+            year = parseInt('20' + year, 10);
+            hour = parseInt(hour, 10);
+            minute = parseInt(minute, 10);
+
+            if (period.toUpperCase() === 'PM' && hour < 12) hour += 12;
+            if (period.toUpperCase() === 'AM' && hour === 12) hour = 0;
+
+            return new Date(year, month - 1, day, hour, minute);
+        }
+
+        function formatDateToLocal(date) {
+            const pad = (num) => num.toString().padStart(2, '0');
+
+            const year = date.getFullYear();
+            const month = pad(date.getMonth() + 1);
+            const day = pad(date.getDate());
+            const hours = pad(date.getHours());
+            const minutes = pad(date.getMinutes());
+
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
     </script>
 @endsection
