@@ -14,7 +14,7 @@ class Admin extends Model implements AuthenticatableContract
 
     protected $primaryKey = 'admin_id';
     public $incrementing = false;
-    protected $table = 'admin';
+    protected $table = 'admins';
 
     protected $fillable = [
         'admin_id',

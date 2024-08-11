@@ -1,5 +1,4 @@
 @extends('layouts-customer.dashboard-customer')
-
 @section('page-content')
 {{-- hello world --}}
 <div class="container">
@@ -8,4 +7,5 @@
             <h1>Dashboard</h1>
         </div>
     </div>
+</div>
 @endsection

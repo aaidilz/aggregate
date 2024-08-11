@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ApprovalController;
 use App\Http\Controllers\DashboardAdminController;
 use App\Http\Controllers\DashboardCustomerController;
+use App\Http\Controllers\DatabasePartController;
+use App\Http\Controllers\DatabaseServiceController;
 use App\Http\Controllers\LoginAdminController;
 use App\Http\Controllers\LoginCustomerController;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +18,34 @@ Route::post('/logout-customer', [LoginCustomerController::class, 'logout'])->nam
 Route::middleware('auth:customer')->prefix('customer')->group(function () {
     Route::get('/', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
     Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
+    // Route Approval
+    Route::get('/approvals', [ApprovalController::class, 'index'])->name('customer.approval.index');
+    Route::get('/approvals/create', [ApprovalController::class, 'create'])->name('customer.approval.create');
+    Route::post('/approvals/create', [ApprovalController::class, 'createApproval'])->name('customer.approval.create-approval');
+    Route::get('/approvals/details', [ApprovalController::class, 'showDetails'])->name('customer.approval.details');
+    Route::get('/approvals/edit/{approval_id}', [ApprovalController::class, 'edit'])->name('customer.approval.edit');
+    Route::put('/approvals/edit/{approval_id}', [ApprovalController::class, 'update'])->name('customer.approval.update');
+    Route::delete('/approvals/delete/{approval_id}', [ApprovalController::class, 'destroy'])->name('customer.approval.delete');
+    // Route DB
+    // Route Parts
+    Route::get('/parts', [DatabasePartController::class, 'index'])->name('customer.database.part.index');
+    // Route::get('/parts/detail/{part_id}', [DatabasePartController::class, 'showDetails'])->name('customer.database.part.details');
+    // Route::put('/parts/detail/{part_id}', [DatabasePartController::class, 'update'])->name('customer.database.part.update');
+    // Route::delete('/parts/delete/{part_id}', [DatabasePartController::class, 'destroy'])->name('customer.database.part.delete');
+    Route::get('/parts/import', [DatabasePartController::class, 'showImportForm'])->name('customer.database.part.import.index');
+    Route::post('/parts/import', [DatabasePartController::class, 'import'])->name('customer.database.part.import');
+    Route::get('/parts/export-template', [DatabasePartController::class, 'exportTemplate'])->name('customer.database.part.export-template');
+    Route::get('/parts/export', [DatabasePartController::class, 'export'])->name('customer.database.part.export');
+
+    // Route Services
+    Route::get('/services', [DatabaseServiceController::class, 'index'])->name('customer.database.service.index');
+    // NEXT: Add route to show details of a service
+
+    // import
+    Route::get('/services/import', [DatabaseServiceController::class, 'showImportForm'])->name('customer.database.service.import.index');
+    Route::post('/services/import', [DatabaseServiceController::class, 'import'])->name('customer.database.service.import');
+    Route::get('/services/export-template', [DatabaseServiceController::class, 'exportTemplate'])->name('customer.database.service.export-template');
+    Route::get('/services/export', [DatabaseServiceController::class, 'export'])->name('customer.database.service.export');
 });
 
 // routes login admin

@@ -25,6 +25,6 @@ class AdminSeeder extends Seeder
             ],
         ];
 
-        DB::table('admin')->insert($admins);
+        DB::table('admins')->insert($admins);
     }
 }
