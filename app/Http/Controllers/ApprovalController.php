@@ -187,7 +187,7 @@ class ApprovalController extends Controller
             // Attach parts to the approval
             $approval->parts()->sync($partIds);
 
-            return redirect()->route('customer.approval.index')->with('success', 'Approval updated successfully');
+            return redirect()->route('customer.approval.details')->with('success', 'Approval updated successfully');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage())->withInput($request->all());
         }
@@ -201,6 +201,6 @@ class ApprovalController extends Controller
         // Delete the approval
         $approval->delete();
 
-        return redirect()->route('customer.approval.index')->with('success', 'Approval deleted successfully');
+        return redirect()->route('customer.approval.details')->with('success', 'Approval deleted successfully');
     }
 }
