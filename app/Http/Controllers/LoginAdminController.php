@@ -18,7 +18,7 @@ class LoginAdminController extends Controller
         $credentials = $request->only('username', 'password');
 
         if (Auth::guard('admin')->attempt($credentials)) {
-            return redirect()->intended('/admin');
+            return redirect()->intended('/a');
         }
 
         return back()->with('error', 'Login failed! Please check your username and password.');

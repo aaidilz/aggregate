@@ -15,9 +15,12 @@ Route::get('/login', [LoginCustomerController::class, 'showLoginForm'])->middlew
 Route::post('/verify-customer', [LoginCustomerController::class, 'login'])->name('verify-login');
 Route::post('/logout-customer', [LoginCustomerController::class, 'logout'])->name('logout-customer');
 
-Route::middleware('auth:customer')->prefix('customer')->group(function () {
+Route::middleware('auth:customer')->prefix('u')->group(function () {
     Route::get('/', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
     Route::get('/dashboard', [DashboardCustomerController::class, 'index'])->name('customer.dashboard');
+    // Route Profile
+    Route::get('/profile', [DashboardCustomerController::class, 'showProfile'])->name('customer.profile');
+    Route::put('/profile', [DashboardCustomerController::class, 'updateProfile'])->name('customer.profile.update');
     // Route Approval
     Route::get('/approvals', [ApprovalController::class, 'index'])->name('customer.approval.index');
     Route::get('/approvals/create', [ApprovalController::class, 'create'])->name('customer.approval.create');
@@ -53,7 +56,7 @@ Route::get('/login-admin', [LoginAdminController::class, 'showLoginForm'])->midd
 Route::post('/verify-admin', [LoginAdminController::class, 'login'])->name('verify-login-admin');
 Route::post('/logout-admin', [LoginAdminController::class, 'logout'])->name('logout-admin');
 
-Route::middleware('auth:admin')->prefix('admin')->group(function () {
+Route::middleware('auth:admin')->prefix('a')->group(function () {
     Route::get('/', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/dashboard', [DashboardAdminController::class, 'index'])->name('admin.dashboard');
 });
