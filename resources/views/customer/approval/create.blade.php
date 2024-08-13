@@ -26,23 +26,27 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <a href="{{ route('customer.approval.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i> Back</a>
+                <a href="{{ route('customer.approval.index') }}" class="btn btn-secondary"><i class="fa fa-arrow-left"></i>
+                    Back</a>
 
             </div>
             <form action="{{ route('customer.approval.create-approval') }}" method="POST">
                 @csrf
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="entry_ticket">Entry Ticket ID</label>
                             <input type="text" class="form-control" id="entry_ticket" name="entry_ticket"
                                 value="{{ old('entry_ticket') }}">
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="serial_number">Entry SSB ID</label>
                             <input type="text" class="form-control" id="serial_number" name="serial_number"
                                 value="{{ old('serial_number') }}">
                         </div>
+                    </div>
+                    <hr>
+                    <div class="row">
                         <div class="col-md-4">
                             <label for="part_number">Entry Part ID</label>
                             <div id="parts-wrapper">
@@ -56,7 +60,39 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-2">
+                            {{-- status part --}}
+                            <label for="status_part">Status Part</label>
+                            <select name="status_part" id="status_part" class="form-control">
+                                <option value="">-- Select Status Part --</option>
+                                <option value="Ready">Ready</option>
+                                <option value="Pending Part CWH">Pending Part CWH</option>
+                                <option value="SOH">SOH</option>
+                                <option value="Pending Part Kota Terusan">Pending Part Kota Terusan</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="status_part_used">Status Part Used</label>
+                            <select name="status_part_used" id="status_part_used" class="form-control">
+                                <option value="">-- Select Status Part Used --</option>
+                                <option value="Defective">Defective</option>
+                                <option value="Good">Good</option>
+                                <option value="DOA">DOA</option>
+                                <option value="Consume">Consume</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="SN_part_good">SN Part Good</label>
+                            <input type="text" name="SN_part_good" id="SN_part_good" class="form-control"
+                                value="{{ old('SN_part_good') }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label for="SN_part_bad">SN Part Bad</label>
+                            <input type="text" name="SN_part_bad" id="SN_part_bad" class="form-control"
+                                value="{{ old('SN_part_bad') }}">
+                        </div>
                     </div>
+                    <hr>
                     <div class="row">
                         <div class="col-md-3">
                             <label for="request_date">Request Date</label>
@@ -76,22 +112,13 @@
                         <div class="col-md-3">
                             <label for="approval_area_remote_date">Approval Area Remote Date</label>
                             <input type="datetime-local" name="approval_area_remote_date" id="approval_area_remote_date"
-                                class="form-control" onpaste="handlePaste(event)" value="{{ old('approval_area_remote_date') }}">
+                                class="form-control" onpaste="handlePaste(event)"
+                                value="{{ old('approval_area_remote_date') }}">
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
-                        <div class="col-md-4">
-                            {{-- status part --}}
-                            <label for="status_part">Status Part</label>
-                            <select name="status_part" id="status_part" class="form-control">
-                                <option value="">-- Select Status Part --</option>
-                                <option value="Ready">Ready</option>
-                                <option value="Pending Part CWH">Pending Part CWH</option>
-                                <option value="SOH">SOH</option>
-                                <option value="Pending Part Kota Terusan">Pending Part Kota Terusan</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for"email_request">Email Request</label>
                             <select name="email_request" id="email_request" class="form-control">
                                 <option value="">-- Select Email Request --</option>
@@ -99,7 +126,7 @@
                                 <option value="Area Remote">Area Remote</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label for="status_email_request">Status Email</label>
                             <select name="status_email_request" id="status_email_request" class="form-control">
                                 <option value="">-- Select Status Email --</option>
@@ -108,36 +135,11 @@
                             </select>
                         </div>
                     </div>
+                    <hr>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <label for="SN_part_good">SN Part Good</label>
-                                    <input type="text" name="SN_part_good" id="SN_part_good" class="form-control" value="{{ old('SN_part_good') }}">
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="SN_part_bad">SN Part Bad</label>
-                                    <input type="text" name="SN_part_bad" id="SN_part_bad" class="form-control" value="{{ old('SN_part_bad') }}">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="status_part_used">Status Part Used</label>
-                                    <select name="status_part_used" id="status_part_used" class="form-control">
-                                        <option value="">-- Select Status Part Used --</option>
-                                        <option value="Defective">Defective</option>
-                                        <option value="Good">Good</option>
-                                        <option value="DOA">DOA</option>
-                                        <option value="Consume">Consume</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="col-md-12">
-                                <label for="reason_description">Reason Description</label>
-                                <textarea name="reason_description" id="reason_description" class="form-control" rows="4">{{ old('reason_description') }}</textarea>
-                            </div>
+                        <div class="col-md-12">
+                            <label for="reason_description">Reason Description</label>
+                            <textarea name="reason_description" id="reason_description" class="form-control" rows="4">{{ old('reason_description') }}</textarea>
                         </div>
                     </div>
                 </div>
