@@ -25,11 +25,14 @@ class Approval extends Model
         'approval_date',
         'create_zulu_date',
         'approval_area_remote_date',
+        'email_request',
+        'status_email_request',
+        'reason_description',
     ];
 
     public function parts()
     {
-        return $this->belongsToMany(Part::class, 'approval_parts', 'approval_id', 'part_id');
+        return $this->belongsToMany(Part::class, 'approval_parts', 'approval_id', 'part_id', 'status_part_id');
     }
 
     // Relasi ke tabel Services
@@ -38,9 +41,4 @@ class Approval extends Model
         return $this->belongsTo(Service::class, 'service_id', 'service_id');
     }
 
-    // Relasi ke tabel Statuses
-    public function status()
-    {
-        return $this->belongsTo(Status::class, 'status_id', 'status_id');
-    }
 }
