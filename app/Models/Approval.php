@@ -32,13 +32,21 @@ class Approval extends Model
 
     public function parts()
     {
-        return $this->belongsToMany(Part::class, 'approval_parts', 'approval_id', 'part_id', 'status_part_id');
+        return $this->belongsToMany(Part::class, 'approval_parts', 'approval_id', 'part_id')
+                    ->withPivot('status_part_id')
+                    ->withTimestamps();
     }
 
-    // Relasi ke tabel Services
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id', 'service_id');
+    }
+
+    public function statusParts()
+    {
+        return $this->belongsToMany(StatusPart::class, 'approval_parts', 'approval_id', 'status_part_id')
+                    ->withPivot('part_id')
+                    ->withTimestamps();
     }
 
 }

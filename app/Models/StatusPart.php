@@ -21,4 +21,18 @@ class StatusPart extends Model
         'status_part_used',
         'status_part',
     ];
+
+    public function approvals()
+    {
+        return $this->belongsToMany(Approval::class, 'approval_parts', 'status_part_id', 'approval_id')
+                    ->withPivot('part_id')
+                    ->withTimestamps();
+    }
+
+    public function parts()
+    {
+        return $this->belongsToMany(Part::class, 'approval_parts', 'status_part_id', 'part_id')
+                    ->withPivot('approval_id')
+                    ->withTimestamps();
+    }
 }

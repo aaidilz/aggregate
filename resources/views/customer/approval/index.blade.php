@@ -54,13 +54,14 @@
         <div class="card">
             <div class="card-header">
                 {{-- details --}}
-                <a href="{{ route('customer.approval.details') }}" class="btn btn-secondary"><i class=" fa fa-list"></i> Action Mode </a>
+                <a href="{{ route('customer.approval.details') }}" class="btn btn-secondary"><i class=" fa fa-list"></i>
+                    Action Mode </a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead class="thead-dark">
-                            <tr>
+                            <tr class="">
                                 <th>No</th>
                                 <th>Ticket Number</th>
                                 <th>Request Date</th>
@@ -69,7 +70,7 @@
                                 <th>Approval Area Remote Date</th>
                                 <th>SSB Number</th>
                                 <th>Bank Name</th>
-                                <th>ATM ID</th>
+                                <th>Machine ID</th>
                                 <th>Location</th>
                                 <th>Service Center</th>
                                 <th>FSE Name</th>
@@ -90,12 +91,12 @@
                         <tbody>
                             @foreach ($approvals as $approval)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $loop->iteration + $approvals->firstItem() - 1 }}</td>
                                     <td>{{ $approval->entry_ticket }}</td>
-                                    <td>{{ $approval->request_date ? Carbon::parse($approval->request_date)->format('n/j/y g:i A') : '' }}</td>
-                                    <td>{{ $approval->approval_date ? Carbon::parse($approval->approval_date)->format('n/j/y g:i A') : '' }}</td>
-                                    <td>{{ $approval->create_zulu_date ? Carbon::parse($approval->create_zulu_date)->format('n/j/y g:i A') : '' }}</td>
-                                    <td>{{ $approval->approval_area_remote_date ? Carbon::parse($approval->approval_area_remote_date)->format('n/j/y g:i A') : '' }}</td>
+                                    <td>{{ Carbon::parse($approval->request_date)->format('d-m-Y') }}</td>
+                                    <td>{{ Carbon::parse($approval->approval_date)->format('d-m-Y') }}</td>
+                                    <td>{{ Carbon::parse($approval->create_zulu_date)->format('d-m-Y') }}</td>
+                                    <td>{{ Carbon::parse($approval->approval_area_remote_date)->format('d-m-Y') }}</td>
                                     <td>{{ $approval->service->serial_number }}</td>
                                     <td>{{ $approval->service->bank_name }}</td>
                                     <td>{{ $approval->service->machine_id }}</td>
@@ -105,36 +106,79 @@
                                     <td>{{ $approval->service->spv_name }}</td>
                                     <td>{{ $approval->service->fsl_name }}</td>
                                     <td>{{ $approval->service->partner_code }}</td>
-                                    <!-- Display parts with bullet points -->
                                     <td>
-                                        <ul>
+                                        <ul style="list-style: none; padding-left: 0;">
                                             @foreach ($approval->parts as $part)
-                                                <li>{{ $part->part_number }}</li>
+                                                <li style="display: flex; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span
+                                                        style="display: inline-block; width: 1em; text-align: center; margin-right: 0.5em;">•</span>
+                                                    {{ $part->part_number }}
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </td>
                                     <td>
-                                        <ul>
+                                        <ul style="list-style: none; padding-left: 0;">
                                             @foreach ($approval->parts as $part)
-                                                <li>{{ $part->part_description }}</li>
+                                                <li style="display: flex; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span
+                                                        style="display: inline-block; width: 1em; text-align: center; margin-right: 0.5em;">•</span>
+                                                    {{ $part->part_description }}
+                                                </li>
                                             @endforeach
                                         </ul>
                                     </td>
-                                    <td>{{ $approval->status->status_part }}</td>
-                                    <td>{{ $approval->status->email_request }}</td>
-                                    <td>{{ $approval->status->status_email_request }}</td>
-                                    <td>{{ $approval->status->SN_part_good }}</td>
-                                    <td>{{ $approval->status->SN_part_bad }}</td>
-                                    <td>{{ $approval->status->status_part_used }}</td>
-                                    <td>{{ $approval->status->reason_description }}</td>
+                                    <td>
+                                        <ul style="list-style: none; padding-left: 0;">
+                                            @foreach ($approval->parts as $part)
+                                                <li style="display: flex; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span
+                                                        style="display: inline-block; width: 1em; text-align: center; margin-right: 0.5em;">•</span>
+                                                    {{ $part->statusPart->status_part ?? 'N/A' }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>{{ $approval->email_request ?? 'N/A' }}</td>
+                                    <td>{{ $approval->status_email_request ?? 'N/A'}}</td>
+                                    <td>
+                                        <ul style="list-style: none; padding-left: 0;">
+                                            @foreach ($approval->parts as $part)
+                                                <li style="display: flex; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span
+                                                        style="display: inline-block; width: 1em; text-align: center; margin-right: 0.5em;">•</span>
+                                                    {{ $part->statusPart->SN_part_good ?? 'N/A' }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul style="list-style: none; padding-left: 0;">
+                                            @foreach ($approval->parts as $part)
+                                                <li style="display: flex; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span
+                                                        style="display: inline-block; width: 1em; text-align: center; margin-right: 0.5em;">•</span>
+                                                    {{ $part->statusPart->SN_part_bad ?? 'N/A' }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+                                    <td>
+                                        <ul style="list-style: none; padding-left: 0;">
+                                            @foreach ($approval->parts as $part)
+                                                <li style="display: flex; align-items: flex-start; margin-bottom: 0.5rem;">
+                                                    <span
+                                                        style="display: inline-block; width: 1em; text-align: center; margin-right: 0.5em;">•</span>
+                                                    {{ $part->statusPart->status_part_used ?? 'N/A' }}
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </td>
+
+                                    <td>{{ $approval->reason_description }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
-                        @if ($approvals->isEmpty())
-                            <tr>
-                                <td colspan="24" class="text-center">Tidak ada data</td>
-                            </tr>
-                        @endif
                     </table>
                 </div>
             </div>

@@ -46,50 +46,49 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label for="part_number">Entry Part ID</label>
-                            <div id="parts-wrapper">
-                                <div class="input-group mb-3">
-                                    <input type="text" class="form-control" id="part_number" name="part_number[]"
-                                        value="{{ old('part_number.0') }}">
+                    <div id="parts-wrapper">
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="part_number">Entry Part ID</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="part_number[]"
+                                        placeholder="Enter Part ID">
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-success add-part-btn"><i
                                                 class="fa fa-plus"></i></button>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            {{-- status part --}}
-                            <label for="status_part">Status Part</label>
-                            <select name="status_part" id="status_part" class="form-control">
-                                <option value="">-- Select Status Part --</option>
-                                <option value="Ready">Ready</option>
-                                <option value="Pending Part CWH">Pending Part CWH</option>
-                                <option value="SOH">SOH</option>
-                                <option value="Pending Part Kota Terusan">Pending Part Kota Terusan</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="status_part_used">Status Part Used</label>
-                            <select name="status_part_used" id="status_part_used" class="form-control">
-                                <option value="">-- Select Status Part Used --</option>
-                                <option value="Defective">Defective</option>
-                                <option value="Good">Good</option>
-                                <option value="DOA">DOA</option>
-                                <option value="Consume">Consume</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label for="SN_part_good">SN Part Good</label>
-                            <input type="text" name="SN_part_good" id="SN_part_good" class="form-control"
-                                value="{{ old('SN_part_good') }}">
-                        </div>
-                        <div class="col-md-2">
-                            <label for="SN_part_bad">SN Part Bad</label>
-                            <input type="text" name="SN_part_bad" id="SN_part_bad" class="form-control"
-                                value="{{ old('SN_part_bad') }}">
+                            <div class="col-md-2">
+                                <label for="status_part">Status Part</label>
+                                <select name="status_part[]" class="form-control">
+                                    <option value="">-- Select Status Part --</option>
+                                    <option value="Ready">Ready</option>
+                                    <option value="Pending Part CWH">Pending Part CWH</option>
+                                    <option value="SOH">SOH</option>
+                                    <option value="Pending Part Kota Terusan">Pending Part Kota Terusan</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="status_part_used">Status Part Used</label>
+                                <select name="status_part_used[]" class="form-control">
+                                    <option value="">-- Select Status Part Used --</option>
+                                    <option value="Defective">Defective</option>
+                                    <option value="Good">Good</option>
+                                    <option value="DOA">DOA</option>
+                                    <option value="Consume">Consume</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label for="SN_part_good">SN Part Good</label>
+                                <input type="text" name="SN_part_good[]" class="form-control"
+                                    placeholder="Enter SN Part Good">
+                            </div>
+                            <div class="col-md-2">
+                                <label for="SN_part_bad">SN Part Bad</label>
+                                <input type="text" name="SN_part_bad[]" class="form-control"
+                                    placeholder="Enter SN Part Bad">
+                            </div>
                         </div>
                     </div>
                     <hr>
@@ -153,44 +152,47 @@
 
 @section('js-tambahan')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Event listener untuk tombol Add Part
-            document.querySelector('.add-part-btn').addEventListener('click', function() {
-                addPartField();
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    const partsWrapper = document.getElementById('parts-wrapper');
 
-            function addPartField() {
-                // Membuat elemen input baru
-                let partsWrapper = document.getElementById('parts-wrapper');
-                let newInputGroup = document.createElement('div');
-                newInputGroup.classList.add('input-group', 'mb-3');
+    partsWrapper.addEventListener('click', function(event) {
+        // Check if the clicked element is the plus or minus button
+        if (event.target.closest('.add-part-btn')) {
+            addPartRow();
+        } else if (event.target.closest('.remove-part-btn')) {
+            removePartRow(event.target.closest('.row'));
+        }
+    });
 
-                let newInput = document.createElement('input');
-                newInput.type = 'text';
-                newInput.className = 'form-control';
-                newInput.name = 'part_number[]';
-                newInput.placeholder = 'Enter Part ID';
+    function addPartRow() {
+        const row = document.querySelector('.row.mb-3');
+        const newRow = row.cloneNode(true);
 
-                let inputGroupAppend = document.createElement('div');
-                inputGroupAppend.className = 'input-group-append';
-
-                let removeButton = document.createElement('button');
-                removeButton.type = 'button';
-                removeButton.className = 'btn btn-danger remove-part-btn';
-                removeButton.innerHTML = '<i class="fa fa-minus"></i>';
-
-                inputGroupAppend.appendChild(removeButton);
-                newInputGroup.appendChild(newInput);
-                newInputGroup.appendChild(inputGroupAppend);
-
-                partsWrapper.appendChild(newInputGroup);
-
-                // Event listener untuk tombol Remove Part
-                removeButton.addEventListener('click', function() {
-                    partsWrapper.removeChild(newInputGroup);
-                });
-            }
+        // Reset the value of each input and select in the new row
+        newRow.querySelectorAll('input, select').forEach(function(input) {
+            input.value = '';
         });
+
+        // Ensure the minus button is present in the new row
+        if (!newRow.querySelector('.remove-part-btn')) {
+            const inputGroupAppend = newRow.querySelector('.input-group-append');
+            const removeButton = document.createElement('button');
+            removeButton.type = 'button';
+            removeButton.className = 'btn btn-danger remove-part-btn';
+            removeButton.innerHTML = '<i class="fa fa-minus"></i>';
+            inputGroupAppend.appendChild(removeButton);
+        }
+
+        partsWrapper.appendChild(newRow);
+    }
+
+    function removePartRow(row) {
+        if (partsWrapper.querySelectorAll('.row.mb-3').length > 1) {
+            partsWrapper.removeChild(row);
+        }
+    }
+});
+
     </script>
 
     <script>

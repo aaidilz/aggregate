@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('approval_id');
             $table->uuid('part_id');
             $table->uuid('status_part_id');
+            $table->timestamps();
 
             $table->foreign('approval_id')->references('approval_id')->on('approvals')->onDelete('cascade');
             $table->foreign('part_id')->references('part_id')->on('parts')->onDelete('cascade');
