@@ -15,16 +15,28 @@ class ApprovalController extends Controller
 {
     public function index(Request $request)
     {
+        // Ambil customer_id dari request (misalnya dari URL query string)
+        $customer_id = $request->input('customer_id');
+
         // Eager load the related models (Service, Parts, and StatusPart)
-        $approvals = Approval::with(['service', 'parts', 'parts.statusPart'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10); // Sesuaikan dengan jumlah data per halaman yang diinginkan
+        $query = Approval::with(['service', 'parts', 'parts.statusPart'])
+            ->orderBy('created_at', 'desc');
+
+        // Jika customer_id ada, filter berdasarkan customer_id
+        if ($customer_id) {
+            $query->where('customer_id', $customer_id);
+        } else {
+            // Jika tidak ada customer_id, ambil customer_id dari customer yang sedang login
+            $customer = auth()->guard('customer')->user();
+            $query->where('customer_id', $customer->customer_id);
+        }
+
+        // Paginate hasil query
+        $approvals = $query->paginate(10); // Sesuaikan dengan jumlah data per halaman yang diinginkan
 
         // Return view with the data
         return view('customer.approval.index', compact('approvals'));
     }
-
-
 
     public function create()
     {
@@ -34,13 +46,14 @@ class ApprovalController extends Controller
 
     public function createApproval(Request $request)
     {
+        // dd($request->all());
         try {
-            // get the currently logged-in customer
+            // Mendapatkan customer yang sedang login
             $customer = auth()->guard('customer')->user();
 
             // Validasi input
             $validatedData = $request->validate([
-                'entry_ticket' => 'required|string|max:255',
+                'entry_ticket' => 'required|string|max:255|unique:approvals,entry_ticket',
                 'request_date' => 'required|date',
                 'approval_date' => 'nullable|date',
                 'create_zulu_date' => 'nullable|date',
@@ -48,50 +61,53 @@ class ApprovalController extends Controller
                 'email_request' => 'nullable|string|max:255',
                 'status_email_request' => 'nullable|string|max:255',
                 'reason_description' => 'nullable|string|max:255',
-                'part_number' => 'required|array',
+                'part_number' => 'required|array|exists:parts,part_number',
                 'status_part' => 'required|array',
                 'status_part_used' => 'required|array',
                 'SN_part_good' => 'nullable|array',
                 'SN_part_bad' => 'nullable|array',
+                'serial_number' => 'required|string|exists:services,serial_number', // Pastikan serial_number disertakan
             ]);
 
-             // Ambil service_id berdasarkan serial_number
-             $service = Service::where('serial_number', $request->serial_number)->first();
-
-             if (!$service) {
-                 return redirect()->back()->with('error', 'Service with the given serial number not found.');
-             }
+            // Mendapatkan service_id berdasarkan serial_number
+            $service = Service::where('serial_number', $validatedData['serial_number'])->firstOrFail();
 
             // Membuat Approval baru
             $approval = Approval::create([
                 'customer_id' => $customer->customer_id,
                 'service_id' => $service->service_id,
-                'entry_ticket' => $request->entry_ticket,
-                'request_date' => $request->request_date,
-                'approval_date' => $request->approval_date,
-                'create_zulu_date' => $request->create_zulu_date,
-                'approval_area_remote_date' => $request->approval_area_remote_date,
-                'email_request' => $request->email_request,
-                'status_email_request' => $request->status_email_request,
-                'reason_description' => $request->reason_description,
+                'entry_ticket' => $validatedData['entry_ticket'],
+                'request_date' => $validatedData['request_date'],
+                'approval_date' => $validatedData['approval_date'],
+                'create_zulu_date' => $validatedData['create_zulu_date'],
+                'approval_area_remote_date' => $validatedData['approval_area_remote_date'],
+                'email_request' => $validatedData['email_request'],
+                'status_email_request' => $validatedData['status_email_request'],
+                'reason_description' => $validatedData['reason_description'],
             ]);
 
             // Menghubungkan Part dan StatusPart ke Approval melalui tabel pivot
-            foreach ($request->part_number as $index => $partNumber) {
+            foreach ($validatedData['part_number'] as $index => $partNumber) {
+
+                // Skip jika part_number null atau kosong
+                if (!$partNumber) {
+                    continue;
+                }
+
                 // Menyimpan atau menemukan Part berdasarkan part_number
                 $part = Part::firstOrCreate([
                     'part_number' => $partNumber,
                 ], [
-                    'part_description' => 'Part description',
-                    'part_type' => 'Part type',
+                    'part_description' => 'Part description', // Ubah jika perlu menjadi dynamic
+                    'part_type' => 'Part type', // Ubah jika perlu menjadi dynamic
                 ]);
 
                 // Membuat StatusPart baru
                 $statusPart = StatusPart::create([
-                    'SN_part_good' => $request->SN_part_good[$index],
-                    'SN_part_bad' => $request->SN_part_bad[$index],
-                    'status_part_used' => $request->status_part_used[$index],
-                    'status_part' => $request->status_part[$index],
+                    'SN_part_good' => $validatedData['SN_part_good'][$index] ?? null,
+                    'SN_part_bad' => $validatedData['SN_part_bad'][$index] ?? null,
+                    'status_part_used' => $validatedData['status_part_used'][$index],
+                    'status_part' => $validatedData['status_part'][$index],
                 ]);
 
                 // Menyimpan hubungan di tabel pivot
@@ -102,115 +118,173 @@ class ApprovalController extends Controller
 
             return redirect()->back()->with('success', 'Approval created successfully!');
         } catch (\Exception $e) {
+            $errorMessage = 'Failed to create approval: ';
+
+            // Cek jika error merupakan instance dari ValidationException
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                $errors = $e->validator->errors()->all();
+                $errorMessage .= implode(' ', $errors); // Gabungkan semua pesan error menjadi satu string
+            } else {
+                // Tambahkan pesan error dari exception lainnya
+                $errorMessage .= $e->getMessage();
+            }
+
             // Log error untuk debugging
-            Log::error('Error creating approval: '.$e->getMessage(), [
+            Log::error('Error creating approval: ' . $e->getMessage(), [
                 'request' => $request->all(),
-                'stack_trace' => $e->getTraceAsString(),
             ]);
 
-            return redirect()->back()->with('error', 'An error occurred while creating approval. Please try again.');
+            return redirect()->back()->with('error', $errorMessage);
         }
     }
 
-
-    // NEED VALIDATE THIS CODE!!!!!
     public function showDetails(Request $request)
     {
-        // Eager load the related models (service, status, parts)
-        $query = Approval::with('service', 'status', 'parts');
+        $customer_id = $request->input('customer_id');
 
-        // Get the current logged-in customer
-        $customer = auth()->guard('customer')->user();
+        $query = Approval::with(['service', 'parts', 'parts.statusPart'])
+            ->orderBy('created_at', 'desc');
 
-        // Filter the query by customer_id
-        $query->where('customer_id', $customer->customer_id);
+        if ($customer_id) {
+            $query->where('customer_id', $customer_id);
+        } else {
+            $customer = auth()->guard('customer')->user();
+            $query->where('customer_id', $customer->customer_id);
+        }
 
-        // Get the filtered approvals
         $approvals = $query->paginate(10);
 
-        // Return the view with the approvals
-        return view('customer.approval.details', compact('approvals', 'request'));
+        return view('customer.approval.details', compact('approvals'));
+
     }
 
-    public function edit($approval_id)
+    public function editApproval($approval_id)
     {
-        // Find the approval by ID
-        $approval = Approval::findOrFail($approval_id);
+        // Check if the customer is logged in
+        $customer = auth()->guard('customer')->user();
+        if (!$customer) {
+            // Return JSON response for unauthorized access
+            return response()->json(['error' => 'You are not authorized to access this page'], 403);
+        }
 
-        // Return the view with the approval
+        // Find the approval record or fail
+        $approval = Approval::with(['service', 'parts', 'parts.statusPart'])
+                            ->findOrFail($approval_id);
+
+        // Check if the approval belongs to the logged-in customer
+        if ($approval->customer_id !== $customer->customer_id) {
+            // Return JSON response for forbidden access
+            return response()->json(['error' => 'You do not have permission to edit this approval'], 403);
+        }
+
+        // Return the approval data as JSON if needed, or proceed with view rendering
         return view('customer.approval.edit', compact('approval'));
     }
 
-    public function update(Request $request, $approval_id)
+
+    public function updateApproval(Request $request, $approval_id)
     {
-        // Validate request with array input for part_number
-        $request->validate([
-            'entry_ticket' => 'required|unique:approvals,entry_ticket,' . $approval_id . ',approval_id',
-            'serial_number' => 'required',
-            'part_number.*' => 'required|exists:parts,part_number', // Validate each part number
-            'request_date' => 'required',
-        ]);
-
-        // Find the approval by ID
-        $approval = Approval::findOrFail($approval_id);
-
-        // Find service based on serial number
-        $service = Service::where('serial_number', $request->input('serial_number'))->first();
-        if (!$service) {
-            return redirect()->back()->with('error', 'Serial Number not found');
+        dd($request->all());
+        // Check if the customer is logged in
+        $customer = auth()->guard('customer')->user();
+        if (!$customer) {
+            // Return JSON response for unauthorized access
+            return response()->json(['error' => 'You are not authorized to access this page'], 403);
         }
 
-        // Update status from request
-        $status = $approval->status;
-        $status->update([
-            'status_part' => $request->status_part,
-            'email_request' => $request->email_request,
-            'status_email_request' => $request->status_email_request,
-            'SN_part_good' => $request->SN_part_good,
-            'SN_part_bad' => $request->SN_part_bad,
-            'status_part_used' => $request->status_part_used,
-            'reason_description' => $request->reason_description,
-        ]);
+        // Find the approval record or fail
+        $approval = Approval::with(['service', 'parts', 'parts.statusPart'])
+                            ->findOrFail($approval_id);
+
+        // Check if the approval belongs to the logged-in customer
+        if ($approval->customer_id !== $customer->customer_id) {
+            // Return JSON response for forbidden access
+            return response()->json(['error' => 'You do not have permission to edit this approval'], 403);
+        }
 
         try {
-            // Get the currently logged-in customer
-            $customer = auth()->guard('customer')->user();
-
-            // Update approval data
-            $approval->update([
-                'entry_ticket' => $request->entry_ticket,
-                'request_date' => $request->request_date,
-                'customer_id' => $customer->customer_id,
-                'service_id' => $service->service_id,
-                'approval_date' => $request->approval_date,
-                'create_zulu_date' => $request->create_zulu_date,
-                'approval_area_remote_date' => $request->approval_area_remote_date,
+            // Validate the input data
+            $validatedData = $request->validate([
+                'entry_ticket' => 'required|string|max:255|unique:approvals,entry_ticket,' . $approval->approval_id . ',approval_id',
+                'request_date' => 'required|date',
+                'approval_date' => 'nullable|date',
+                'create_zulu_date' => 'nullable|date',
+                'approval_area_remote_date' => 'nullable|date',
+                'email_request' => 'nullable|string|max:255',
+                'status_email_request' => 'nullable|string|max:255',
+                'reason_description' => 'nullable|string|max:255',
+                'part_number' => 'required|array|exists:parts,part_number',
+                'status_part' => 'required|array',
+                'status_part_used' => 'required|array',
+                'SN_part_good' => 'nullable|array',
+                'SN_part_bad' => 'nullable|array',
+                'serial_number' => 'required|string|exists:services,serial_number', // Make sure serial_number is included
             ]);
 
-            // Retrieve all part numbers from the request
-            $partNumbers = $request->input('part_number', []);
+            // Update the approval record
+            $approval->update([
+                'entry_ticket' => $validatedData['entry_ticket'],
+                'request_date' => $validatedData['request_date'],
+                'approval_date' => $validatedData['approval_date'],
+                'create_zulu_date' => $validatedData['create_zulu_date'],
+                'approval_area_remote_date' => $validatedData['approval_area_remote_date'],
+                'email_request' => $validatedData['email_request'],
+                'status_email_request' => $validatedData['status_email_request'],
+                'reason_description' => $validatedData['reason_description'],
+            ]);
 
-            // Retrieve parts and prepare for syncing
-            $parts = Part::whereIn('part_number', $partNumbers)->get();
-            $partIds = $parts->pluck('part_id')->all();
+            // Update the related parts and status parts
+            $approval->parts()->detach();
 
-            // Attach parts to the approval
-            $approval->parts()->sync($partIds);
+            foreach ($validatedData['part_number'] as $index => $partNumber) {
+                // Skip if part_number is null or empty
+                if (!$partNumber) {
+                    continue;
+                }
 
-            return redirect()->route('customer.approval.details')->with('success', 'Approval updated successfully');
+                // Save or find the Part based on part_number
+                $part = Part::firstOrCreate([
+                    'part_number' => $partNumber,
+                ], [
+                    'part_description' => 'Part description', // Change if needed to be dynamic
+                    'part_type' => 'Part type', // Change if needed to be dynamic
+                ]);
+
+                // Create a new StatusPart
+                $statusPart = StatusPart::create([
+                    'SN_part_good' => $validatedData['SN_part_good'][$index] ?? null,
+                    'SN_part_bad' => $validatedData['SN_part_bad'][$index] ?? null,
+                    'status_part_used' => $validatedData['status_part_used'][$index],
+                    'status_part' => $validatedData['status_part'][$index],
+                ]);
+
+                // Save the relationship in the pivot table
+                $approval->parts()->attach($part->part_id, [
+                    'status_part_id' => $statusPart->status_part_id,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Approval updated successfully!');
+
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', $e->getMessage())->withInput($request->all());
+            $errorMessage = 'Failed to update approval: ';
+
+            // Check if the error is an instance of ValidationException
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                $errors = $e->validator->errors()->all();
+                $errorMessage .= implode(' ', $errors); // Combine all error messages into one string
+            } else {
+                // Add error message from other exceptions
+                $errorMessage .= $e->getMessage();
+            }
+
+            // Log the error for debugging
+            Log::error('Error updating approval: ' . $e->getMessage(), [
+                'request' => $request->all(),
+            ]);
+
+            return redirect()->back()->with('error', $errorMessage);
         }
-    }
 
-    public function destroy($approval_id)
-    {
-        // Find the approval by ID
-        $approval = Approval::findOrFail($approval_id);
-
-        // Delete the approval
-        $approval->delete();
-
-        return redirect()->route('customer.approval.details')->with('success', 'Approval deleted successfully');
     }
 }

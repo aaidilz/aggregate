@@ -26,8 +26,8 @@ Route::middleware('auth:customer')->prefix('u')->group(function () {
     Route::get('/approvals/create', [ApprovalController::class, 'create'])->name('customer.approval.create');
     Route::post('/approvals/create', [ApprovalController::class, 'createApproval'])->name('customer.approval.create-approval');
     Route::get('/approvals/details', [ApprovalController::class, 'showDetails'])->name('customer.approval.details');
-    Route::get('/approvals/edit/{approval_id}', [ApprovalController::class, 'edit'])->name('customer.approval.edit');
-    Route::put('/approvals/edit/{approval_id}', [ApprovalController::class, 'update'])->name('customer.approval.update');
+    Route::get('/approvals/edit/{approval_id}', [ApprovalController::class, 'editApproval'])->name('customer.approval.edit');
+    Route::put('/approvals/edit/{approval_id}', [ApprovalController::class, 'updateApproval'])->name('customer.approval.update');
     Route::delete('/approvals/delete/{approval_id}', [ApprovalController::class, 'destroy'])->name('customer.approval.delete');
     // Route DB
     // Route Parts

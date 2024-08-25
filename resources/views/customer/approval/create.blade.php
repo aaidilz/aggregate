@@ -37,22 +37,22 @@
                         <div class="col-md-6">
                             <label for="entry_ticket">Entry Ticket ID</label>
                             <input type="text" class="form-control" id="entry_ticket" name="entry_ticket"
-                                value="{{ old('entry_ticket') }}">
+                                value="{{ old('entry_ticket') }}" placeholder="Ticket ID...">
                         </div>
                         <div class="col-md-6">
                             <label for="serial_number">Entry SSB ID</label>
                             <input type="text" class="form-control" id="serial_number" name="serial_number"
-                                value="{{ old('serial_number') }}">
+                                value="{{ old('serial_number') }}" placeholder="SSB ID...">
                         </div>
                     </div>
                     <hr>
                     <div id="parts-wrapper">
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label for="part_number">Entry Part ID</label>
+                                <label for="part_number">Entry PN Part</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="part_number[]"
-                                        placeholder="Enter Part ID">
+                                        placeholder="PN Part...">
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-success add-part-btn"><i
                                                 class="fa fa-plus"></i></button>
@@ -82,12 +82,12 @@
                             <div class="col-md-2">
                                 <label for="SN_part_good">SN Part Good</label>
                                 <input type="text" name="SN_part_good[]" class="form-control"
-                                    placeholder="Enter SN Part Good">
+                                    placeholder="SN Part Good...">
                             </div>
                             <div class="col-md-2">
                                 <label for="SN_part_bad">SN Part Bad</label>
                                 <input type="text" name="SN_part_bad[]" class="form-control"
-                                    placeholder="Enter SN Part Bad">
+                                    placeholder="SN Part Bad...">
                             </div>
                         </div>
                     </div>
@@ -152,47 +152,46 @@
 
 @section('js-tambahan')
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const partsWrapper = document.getElementById('parts-wrapper');
+        document.addEventListener('DOMContentLoaded', function() {
+            const partsWrapper = document.getElementById('parts-wrapper');
 
-    partsWrapper.addEventListener('click', function(event) {
-        // Check if the clicked element is the plus or minus button
-        if (event.target.closest('.add-part-btn')) {
-            addPartRow();
-        } else if (event.target.closest('.remove-part-btn')) {
-            removePartRow(event.target.closest('.row'));
-        }
-    });
+            partsWrapper.addEventListener('click', function(event) {
+                // Check if the clicked element is the plus or minus button
+                if (event.target.closest('.add-part-btn')) {
+                    addPartRow();
+                } else if (event.target.closest('.remove-part-btn')) {
+                    removePartRow(event.target.closest('.row'));
+                }
+            });
 
-    function addPartRow() {
-        const row = document.querySelector('.row.mb-3');
-        const newRow = row.cloneNode(true);
+            function addPartRow() {
+                const row = document.querySelector('.row.mb-3');
+                const newRow = row.cloneNode(true);
 
-        // Reset the value of each input and select in the new row
-        newRow.querySelectorAll('input, select').forEach(function(input) {
-            input.value = '';
+                // Reset the value of each input and select in the new row
+                newRow.querySelectorAll('input, select').forEach(function(input) {
+                    input.value = '';
+                });
+
+                // Ensure the minus button is present in the new row
+                if (!newRow.querySelector('.remove-part-btn')) {
+                    const inputGroupAppend = newRow.querySelector('.input-group-append');
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'btn btn-danger remove-part-btn';
+                    removeButton.innerHTML = '<i class="fa fa-minus"></i>';
+                    inputGroupAppend.appendChild(removeButton);
+                }
+
+                partsWrapper.appendChild(newRow);
+            }
+
+            function removePartRow(row) {
+                if (partsWrapper.querySelectorAll('.row.mb-3').length > 1) {
+                    partsWrapper.removeChild(row);
+                }
+            }
         });
-
-        // Ensure the minus button is present in the new row
-        if (!newRow.querySelector('.remove-part-btn')) {
-            const inputGroupAppend = newRow.querySelector('.input-group-append');
-            const removeButton = document.createElement('button');
-            removeButton.type = 'button';
-            removeButton.className = 'btn btn-danger remove-part-btn';
-            removeButton.innerHTML = '<i class="fa fa-minus"></i>';
-            inputGroupAppend.appendChild(removeButton);
-        }
-
-        partsWrapper.appendChild(newRow);
-    }
-
-    function removePartRow(row) {
-        if (partsWrapper.querySelectorAll('.row.mb-3').length > 1) {
-            partsWrapper.removeChild(row);
-        }
-    }
-});
-
     </script>
 
     <script>
@@ -243,13 +242,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Set the value of the input field
                 event.target.value = formattedDate;
             } else {
-                alert('Invalid date format. Please use "M/D/YY h:mm AM/PM" format.');
+                alert('Invalid date format. Please use "M/D/YYYY h:mm AM/PM" format.');
             }
         }
 
         function parseDate(dateString) {
-            // Regex to match the date format "M/D/YY h:mm AM/PM"
-            const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{2})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i;
+            // Regex to match the date format "M/D/YYYY h:mm AM/PM"
+            const regex = /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i;
             const match = dateString.match(regex);
 
             if (!match) return null;
@@ -257,7 +256,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let [_, month, day, year, hour, minute, period] = match;
             month = parseInt(month, 10);
             day = parseInt(day, 10);
-            year = parseInt('20' + year, 10);
+            year = parseInt(year, 10);
             hour = parseInt(hour, 10);
             minute = parseInt(minute, 10);
 
